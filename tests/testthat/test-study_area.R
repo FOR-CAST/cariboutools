@@ -14,6 +14,13 @@ test_that("build_study_area_calibration returns a larger convex hull", {
   expect_gt(terra::expanse(sac), terra::expanse(sa))
 })
 
+test_that("build_study_area_param buffers outward", {
+  sa <- terra::vect("POLYGON ((0 0, 10000 0, 10000 10000, 0 10000, 0 0))", crs = "EPSG:3978")
+  p <- build_study_area_param(sa, buffer_m = 5000)
+  expect_s4_class(p, "SpatVector")
+  expect_gt(terra::expanse(p), terra::expanse(sa))
+})
+
 test_that("build_study_area fetches and buffers the caribou range", {
   skip_on_cran()
   skip_if_offline("mapservices.gov.yk.ca")
@@ -22,4 +29,15 @@ test_that("build_study_area fetches and buffers the caribou range", {
   expect_s4_class(sa, "SpatVector")
   expect_equal(nrow(sa), 1L)
   expect_equal(terra::crs(sa, describe = TRUE)$code, "3978")
+})
+
+test_that("build_study_area_ANPP returns intersecting ecoprovinces", {
+  skip_on_cran()
+  skip_if_offline()
+
+  sa <- build_study_area(herd_class = "Boreal", crs = "EPSG:3978")
+  eco <- build_study_area_ANPP(sa)
+  expect_s4_class(eco, "SpatVector")
+  expect_gt(nrow(eco), 0L)
+  expect_equal(terra::crs(eco, describe = TRUE)$code, "3978")
 })

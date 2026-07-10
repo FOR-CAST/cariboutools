@@ -71,3 +71,56 @@ build_rasterToMatch <- function(study_area, res_m = 250) {
 build_study_area_calibration <- function(study_area, buffer_m = 50000) {
   terra::convHull(terra::buffer(study_area, width = buffer_m))
 }
+
+#' Build the parameterisation study area (a larger buffered study area)
+#'
+#' `Biomass_borealDataPrep` parameterises its statistical models over a larger
+#' area than the simulation study area; this is `study_area` with an additional
+#' outward buffer.
+#'
+#' @param study_area A terra `SpatVector` (see [build_study_area()]).
+#' @param buffer_m Additional outward buffer, in metres.
+#'
+#' @return A terra `SpatVector`.
+#' @export
+#' @examples
+#' \dontrun{
+#' build_study_area_param(build_study_area())
+#' }
+build_study_area_param <- function(study_area, buffer_m = 50000) {
+  terra::buffer(study_area, width = buffer_m)
+}
+
+#' Build the ANPP (parameterisation) study area from ecoprovinces
+#'
+#' Download the Canadian ecoprovince polygons and keep those that intersect the
+#' study area, reprojected to its CRS. `Biomass_speciesParameters` uses this to
+#' subset permanent-sample-plot (PSP) data over ecologically meaningful
+#' boundaries.
+#'
+#' @param study_area A terra `SpatVector` (see [build_study_area()]).
+#' @param dest Directory to download and cache the ecoprovince shapefile into.
+#' @param url Source URL for the ecoprovince shapefile zip.
+#'
+#' @return A terra `SpatVector` of the intersecting ecoprovinces, in the study
+#'   area's CRS.
+#' @export
+#' @examples
+#' \dontrun{
+#' build_study_area_ANPP(build_study_area())
+#' }
+build_study_area_ANPP <- function(
+  study_area,
+  dest = tempdir(),
+  url = "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/province/ecoprovince_shp.zip"
+) {
+  zip <- file.path(dest, "ecoprovince_shp.zip")
+  if (!file.exists(zip)) {
+    utils::download.file(url, zip, mode = "wb", quiet = TRUE)
+  }
+  exdir <- file.path(dest, "ecoprovince")
+  utils::unzip(zip, exdir = exdir)
+  shp <- list.files(exdir, pattern = "\\.shp$", full.names = TRUE, recursive = TRUE)[[1]]
+  eco <- terra::project(terra::vect(shp), terra::crs(study_area))
+  eco[terra::is.related(eco, study_area, "intersects"), ]
+}
