@@ -2,6 +2,5 @@
 
 export(build_rasterToMatch)
 export(build_study_area)
-export(build_study_area_ANPP)
 export(build_study_area_calibration)
 export(build_study_area_param)
