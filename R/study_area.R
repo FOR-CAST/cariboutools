@@ -114,6 +114,7 @@ build_study_area_ANPP <- function(
   dest = tempdir(),
   url = "https://sis.agr.gc.ca/cansis/nsdb/ecostrat/province/ecoprovince_shp.zip"
 ) {
+  dir.create(dest, recursive = TRUE, showWarnings = FALSE)
   zip <- file.path(dest, "ecoprovince_shp.zip")
   if (!file.exists(zip)) {
     utils::download.file(url, zip, mode = "wb", quiet = TRUE)

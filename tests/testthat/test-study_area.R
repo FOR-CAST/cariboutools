@@ -36,7 +36,7 @@ test_that("build_study_area_ANPP returns intersecting ecoprovinces", {
   skip_if_offline()
 
   sa <- build_study_area(herd_class = "Boreal", crs = "EPSG:3978")
-  eco <- build_study_area_ANPP(sa)
+  eco <- build_study_area_ANPP(sa, dest = file.path(tempdir(), "cariboutools_eco_test"))
   expect_s4_class(eco, "SpatVector")
   expect_gt(nrow(eco), 0L)
   expect_equal(terra::crs(eco, describe = TRUE)$code, "3978")
