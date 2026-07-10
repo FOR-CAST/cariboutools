@@ -15,11 +15,9 @@ Imports:
     utils,
     ytdata
 Suggests:
-    LandR,
     testthat (>= 3.0.0)
 Remotes:
-    FOR-CAST/ytdata,
-    PredictiveEcology/LandR
+    FOR-CAST/ytdata
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
