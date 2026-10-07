@@ -1,6 +1,6 @@
 Package: cariboutools
 Title: Helpers for the YT_caribou Modelling Workflow
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R:
     person("Alex M.", "Chubaty", , "achubaty@for-cast.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7146-8135"))
@@ -20,4 +20,4 @@ Remotes:
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

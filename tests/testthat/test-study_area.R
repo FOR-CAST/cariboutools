@@ -7,6 +7,15 @@ test_that("build_rasterToMatch makes a template raster over the study area", {
   expect_equal(names(rtm), "rasterToMatch")
 })
 
+test_that("build_rasterToMatch snaps to whole cells on a shared grid", {
+  sa <- terra::vect("POLYGON ((13 7, 10101 7, 10101 9893, 13 9893, 13 7))", crs = "EPSG:3978")
+  rtm <- build_rasterToMatch(sa, res_m = 250)
+  expect_equal(terra::res(rtm), c(250, 250))
+  expect_equal(as.vector(terra::ext(rtm)), c(xmin = 0, xmax = 10250, ymin = 0, ymax = 10000))
+  rtm_large <- build_rasterToMatch(terra::buffer(sa, 3333), res_m = 250)
+  expect_no_error(terra::compareGeom(rtm, rtm_large, ext = FALSE, rowcol = FALSE, res = TRUE))
+})
+
 test_that("build_study_area_calibration returns a larger convex hull", {
   sa <- terra::vect("POLYGON ((0 0, 10000 0, 10000 10000, 0 10000, 0 0))", crs = "EPSG:3978")
   sac <- build_study_area_calibration(sa, buffer_m = 5000)

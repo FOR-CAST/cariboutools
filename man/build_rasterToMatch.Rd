@@ -15,7 +15,9 @@ build_rasterToMatch(study_area, res_m = 250)
 A terra \code{SpatRaster} with value 1 inside \code{study_area}, \code{NA} outside.
 }
 \description{
-Build a template raster (\code{rasterToMatch}) over a study area
+The extent of \code{study_area} is snapped outward to whole \code{res_m} cells on a
+grid with its origin at (0, 0), so templates built at the same resolution
+from different study areas line up cell for cell.
 }
 \examples{
 \dontrun{

@@ -34,6 +34,10 @@ build_study_area <- function(
 
 #' Build a template raster (`rasterToMatch`) over a study area
 #'
+#' The extent of `study_area` is snapped outward to whole `res_m` cells on a
+#' grid with its origin at (0, 0), so templates built at the same resolution
+#' from different study areas line up cell for cell.
+#'
 #' @param study_area A terra `SpatVector` (e.g. from [build_study_area()]).
 #' @param res_m Pixel size in metres.
 #'
@@ -44,8 +48,11 @@ build_study_area <- function(
 #' build_rasterToMatch(build_study_area(), res_m = 250)
 #' }
 build_rasterToMatch <- function(study_area, res_m = 250) {
+  ## terra::rast() keeps the extent it is given and stretches the cells to fit it
+  e <- as.vector(terra::ext(study_area)) / res_m
+  e <- c(floor(e[["xmin"]]), ceiling(e[["xmax"]]), floor(e[["ymin"]]), ceiling(e[["ymax"]]))
   template <- terra::rast(
-    terra::ext(study_area),
+    terra::ext(e * res_m),
     resolution = res_m,
     crs = terra::crs(study_area)
   )
